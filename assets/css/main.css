@@ -373,6 +373,59 @@ table {
   border-spacing: 0;
 }
 
+@-webkit-keyframes rainbow {
+  0% {
+    color: red;
+  }
+  10% {
+    color: orange;
+  }
+  26% {
+    color: yellow;
+  }
+  42% {
+    color: green;
+  }
+  58% {
+    color: blue;
+  }
+  74% {
+    color: indigo;
+  }
+  90% {
+    color: violet;
+  }
+  100% {
+    color: red;
+  }
+}
+
+@keyframes rainbow {
+  0% {
+    color: red;
+  }
+  10% {
+    color: orange;
+  }
+  26% {
+    color: yellow;
+  }
+  42% {
+    color: green;
+  }
+  58% {
+    color: blue;
+  }
+  74% {
+    color: indigo;
+  }
+  90% {
+    color: violet;
+  }
+  100% {
+    color: red;
+  }
+}
 *, *:before, *:after {
   box-sizing: inherit;
 }
@@ -407,12 +460,16 @@ body.loaded .rotator {
   top: 0;
   left: 0;
   margin: 0;
+  z-index: 1;
   width: 100%;
-  color: #fff;
   position: absolute;
+  height: 68px;
   padding: 10px 50px;
   mix-blend-mode: exclusion;
   background: rgba(255, 255, 255, 0.25);
+  -webkit-animation: 30s linear normal infinite rainbow;
+          animation: 30s linear normal infinite rainbow;
+  box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.01);
 }
 
 .palette {
@@ -424,18 +481,19 @@ body.loaded .rotator {
 .palette .color {
   width: 100%;
   color: #fff;
-  height: 35vh;
   -webkit-box-flex: 1;
       -ms-flex-positive: 1;
           flex-grow: 1;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  padding: 50px;
+  min-height: 35vh;
   text-align: right;
+  position: relative;
   -webkit-box-align: end;
       -ms-flex-align: end;
           align-items: flex-end;
+  padding: 118px 50px 50px;
 }
 .palette .color .-inner {
   width: 100%;
@@ -445,13 +503,33 @@ body.loaded .rotator {
   margin: 0;
 }
 .palette .color .color-hex {
+  margin: 0;
   padding: 4px;
-  margin-left: -4px;
-  width: calc(100% + 8px);
+  text-transform: uppercase;
 }
 .palette .color .color-hex:focus, .palette .color .color-hex:hover {
   outline: none;
   background: rgba(255, 255, 255, 0.2);
+}
+.palette .color .palette-actions {
+  margin-right: -10px;
+}
+.palette .color .palette-actions button {
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 30px;
+  font-weight: 900;
+  background: none;
+  line-height: 36px;
+  margin: 0 0 0 10px;
+  mix-blend-mode: exclusion;
+}
+.palette .color .palette-actions button:hover {
+  background: rgba(255, 255, 255, 0.25);
 }
 
 .comparison,
@@ -467,8 +545,8 @@ body.loaded .rotator {
   margin-top: 0;
   mix-blend-mode: exclusion;
 }
-.comparison h2 button,
-.result h2 button {
+.comparison button,
+.result button {
   width: 40px;
   height: 40px;
   cursor: pointer;
@@ -477,14 +555,15 @@ body.loaded .rotator {
   line-height: 36px;
   border-radius: 50%;
   text-align: center;
+  mix-blend-mode: exclusion;
   border: 2px solid rgba(255, 255, 255, 0);
 }
-.comparison h2 button:focus,
-.result h2 button:focus {
+.comparison button:focus,
+.result button:focus {
   outline: none;
 }
-.comparison h2 button:hover,
-.result h2 button:hover {
+.comparison button:hover,
+.result button:hover {
   color: #fff;
   background-color: #000;
   border-color: white;

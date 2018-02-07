@@ -1,0 +1,28 @@
+// Animations
+
+@keyframes rainbow {
+  0% {
+    color: red;
+  }
+  10% {
+    color: orange;
+  }
+  26% {
+    color: yellow;
+  }
+  42% {
+    color: green;
+  }
+  58% {
+    color: blue;
+  }
+  74% {
+    color: indigo;
+  }
+  90% {
+    color: violet;
+  }
+  100% {
+    color: red;
+  }
+}

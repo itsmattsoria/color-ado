@@ -7,7 +7,7 @@ var Main = (function($) {
       apiUrl,
       mode,
       getColor,
-      startingCount,
+      paletteCount,
       testing = false;
 
   function _init() {
@@ -17,7 +17,7 @@ var Main = (function($) {
     $palette = $('.palette');
     palette = {};
     paletteData= {};
-    startingCount = 4;
+    paletteCount = 4;
     mode = 'analogic-complement';
 
     // Testing
@@ -32,9 +32,16 @@ var Main = (function($) {
 
     // Esc handlers
     $(document).keyup(function(e) {
+      // Escape
       if (e.keyCode === 27) {
 
       }
+
+      // Add
+      if (e.keyCode === 187) {
+        _paletteAddColor();
+      }
+
     });
 
   } // end init()
@@ -52,10 +59,9 @@ var Main = (function($) {
   function _buildPalette() {
     var randomColor = _getRandomColor();
     randomColor = randomColor.replace('#','');
-    apiUrl = 'http://www.thecolorapi.com/scheme?hex='+randomColor+'&format=jsonp&mode='+mode+'&count='+startingCount;
+    apiUrl = 'http://www.thecolorapi.com/scheme?hex='+randomColor+'&format=jsonp&mode='+mode+'&count='+paletteCount;
 
-    $.get(apiUrl, function() {
-    }).done(function(response) {
+    $.get(apiUrl).done(function(response) {
       var colors = response.colors;
 
       for (var i=0;i<colors.length;i++) {
@@ -64,10 +70,10 @@ var Main = (function($) {
       }
 
       $.each(paletteData, function(index, color) {
-        $palette.append('<div class="color" style="background-color:'+color.value+';" data-hex="'+color.value+'" data-name="'+color.name+'" data-palette-index="'+index+'"><div class="-inner"><h3 class="color-name">'+color.name+'</h3><p class="color-hex" contenteditable="true">'+color.value+'</p></div></div>');
+        $palette.append('<div class="color" style="background-color:'+color.value+';" data-hex="'+color.value+'" data-name="'+color.name+'"><div class="-inner"><h3 class="color-hex" contenteditable="true">'+color.value+'</h3><div class="palette-actions"><button class="add">+</button><button class="remove">-</button></div></div></div>');
       });
 
-      _genorateResults(palette);
+      _generateResults(palette);
     });
 
     // Watch Color Palette for Changes
@@ -76,12 +82,17 @@ var Main = (function($) {
 
       if (colorHexValue.length === 7) {
         var $thisColor = $(this).closest('.color');
-        var paletteIndex = $thisColor.attr('data-palette-index');
 
-        palette[paletteIndex] = colorHexValue;
         $thisColor.css('background-color', colorHexValue);
+        $thisColor.attr('data-hex', colorHexValue);
 
-        _genorateResults(palette);
+        // Get New Color Name
+        var colorApiUrl = 'http://www.colr.org/json/color/'+colorHexValue.replace('#','');
+        // $.get(colorApiUrl).done(function(response) {
+        //   var responseObject = $.parseJSON(response);
+        // });
+
+        _updatePalette();
       }
     }).on('blur', '.color-hex', function(e) {
       var colorHexValue = $(this).html();
@@ -92,23 +103,73 @@ var Main = (function($) {
     });
   }
 
-  function _genorateResults(palette) {
+  function _generateResults(palette) {
 
     var comparisonColor = _getRandomColor();
     $(".comparison").css("background-color", comparisonColor);
+    $('.comparison .color-value').html(comparisonColor);
 
     var getColor = nearestColor.from(palette);
     var resultColor = getColor(comparisonColor);
-    var resultColorName = $('.color[data-palette-index="'+resultColor.name+'"]').attr('data-name');
+    // var resultColorName = $('.color[data-hex="'+resultColor.value+'"]').attr('data-name');
 
     $('.result').css("background-color", resultColor.value);
-    $('.result h2 .color-name').html(resultColorName + ' ('+resultColor.value+')');
+    $('.result h2 .color-value').html(resultColor.value);
+  }
+
+  function _updatePalette() {
+    palette = {};
+    colors = $('.palette .color');
+
+    colors.each(function(index, element) {
+      var colorValue = $(element).attr('data-hex');
+      palette['color-'+index] = colorValue;
+    });
   }
 
   function _initActions() {
     $('.comparison button').on('click', function() {
-      _genorateResults(palette);
+      _generateResults(palette);
     });
+
+    // Add new color to palette
+    $document.on('click', '.palette-actions button', function() {
+      var colors = $('.palette .color');
+      var $thisColor = $(this).closest('.color');
+
+      if ($(this).is('.add')) {
+
+        _paletteAddColor($thisColor);
+        
+      } else if ($(this).is('.remove')) {
+        if (colors.length === 2) {
+          $('.palette-actions .remove').addClass('hidden');
+        }
+
+        $thisColor.remove();
+      }
+
+      _updatePalette();
+    });
+  }
+
+  function _paletteAddColor(element) {
+    var colors = $('.palette .color');
+    var $element;
+
+    if (element === undefined || element === 'undefined') {
+      $element = $('.palette .color').last();
+    } else {
+      $element = element;
+    }
+
+    if (colors.length === 1) {
+      $('.palette-actions .remove.hidden').removeClass('hidden');
+    }
+
+    var newColor = '<div class="color" style="background-color:#FFFFFF;" data-hex="#FFFFFF" data-name="White"><div class="-inner"><h3 class="color-hex" contenteditable="true">#FFFFFF</h3><div class="palette-actions"><button class="add">+</button><button class="remove">-</button></div></div></div>';
+    
+    $(newColor).insertAfter($element);
   }
 
   // Track ajax pages in Analytics
