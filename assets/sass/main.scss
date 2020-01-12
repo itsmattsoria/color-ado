@@ -1,4 +1,4 @@
-@charset "UTF-8"; 
+@charset "UTF-8";
 
 // Reset
 @import "vendor/normalize";
@@ -6,6 +6,7 @@
 // Helpers and Variables
 @import "helpers/variables";;
 @import "helpers/mixins";
+@import "helpers/utility";
 @import "helpers/animations";
 
 // Components
