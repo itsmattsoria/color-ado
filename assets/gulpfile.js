@@ -26,7 +26,7 @@ var paths = {
 // Setup browsersync
 gulp.task('browser-sync', function() {
     browserSync.init({
-        proxy: "color-ado.static"
+        proxy: "colorado.static"
     });
 });
 
@@ -100,7 +100,7 @@ gulp.task('watch', function() {
   // Init BrowserSync
   browserSync.init({
     files: ['*.html', '*.php'],
-    proxy: 'color-ado.static',
+    proxy: 'colorado.static',
     notify: false,
   });
   // Kick it off with a build

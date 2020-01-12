@@ -59,7 +59,7 @@ var Main = (function($) {
   function _buildPalette() {
     var randomColor = _getRandomColor();
     randomColor = randomColor.replace('#','');
-    apiUrl = 'http://www.thecolorapi.com/scheme?hex='+randomColor+'&format=jsonp&mode='+mode+'&count='+paletteCount;
+    apiUrl = 'https://www.thecolorapi.com/scheme?hex='+randomColor+'&format=jsonp&mode='+mode+'&count='+paletteCount;
 
     $.get(apiUrl).done(function(response) {
       var colors = response.colors;
@@ -140,7 +140,7 @@ var Main = (function($) {
       if ($(this).is('.add')) {
 
         _paletteAddColor($thisColor);
-        
+
       } else if ($(this).is('.remove')) {
         if (colors.length === 2) {
           $('.palette-actions .remove').addClass('hidden');
@@ -168,7 +168,7 @@ var Main = (function($) {
     }
 
     var newColor = '<div class="color" style="background-color:#FFFFFF;" data-hex="#FFFFFF" data-name="White"><div class="-inner"><h3 class="color-hex" contenteditable="true">#FFFFFF</h3><div class="palette-actions"><button class="add">+</button><button class="remove">-</button></div></div></div>';
-    
+
     $(newColor).insertAfter($element);
   }
 
